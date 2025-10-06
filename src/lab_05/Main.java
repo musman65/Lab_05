@@ -121,7 +121,7 @@ public class Main extends Application {
         
         Scene scene = new Scene(root, 900, 300);
         stage.setScene(scene);
-        scene.getStylesheets().add("styles.css");
+        scene.getStylesheets().add("task1_styles.css");
         stage.show();
     }
     
