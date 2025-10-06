@@ -38,7 +38,7 @@ public class Main extends Application {
         
         //Label(s) and List View
         Label mainLabel = new Label("Select bag style:");
-        Label orderPlaced = new Label("test");
+        Label finalLabel = new Label("test");
         ListView<String> lv = new ListView<>();
         lv.getItems().addAll("Full Decorative", "Beaded", "Pirate Design", "Fringed", "Leather", "Plain");
         lv.setMaxHeight(185);
@@ -68,21 +68,60 @@ public class Main extends Application {
         r1.setSelected(true);
         
         //Event Handling
+        order.setOnMousePressed(event -> {
+            //Data Validation
+            String selectedStyle = lv.getSelectionModel().getSelectedItem();
+            if (selectedStyle == null) { // If nothing is selected inside the list view
+                finalLabel.getStyleClass().add("label-warning");
+                finalLabel.setText("Please select a bag style to order!");
+                return;
+            }
+            
+            Integer selectedAmount = cb.getSelectionModel().getSelectedItem();
+            if (selectedAmount == null) {
+                finalLabel.getStyleClass().add("label-warning");
+                finalLabel.setText("Please select a quantity to order!");
+                return;
+            }
+            
+            String selectedSize = "";
+            if (r1.isSelected()) {
+                selectedSize = "Small";
+            } else if (r2.isSelected()) {
+                selectedSize = "Medium";
+            } else if (r3.isSelected()) {
+                selectedSize = "Large";
+            } else { // Logically, should NEVER run, but I put it here just in case there is a flaw in my code
+                finalLabel.getStyleClass().add("label-warning");
+                finalLabel.setText("There was an error with the size!");
+                return;
+            }
+            
+            finalLabel.setText("Your order of " + selectedAmount + " " + selectedSize + " " + selectedStyle + " bags has been successfully placed!");
+            finalLabel.getStyleClass().add("label-style1");
+        });
         
+        clear.setOnMousePressed(event -> {
+            lv.getSelectionModel().clearSelection();
+            cb.getSelectionModel().clearSelection();
+            finalLabel.setText("");
+            finalLabel.getStyleClass().add("label-style1");
+        });
         
         //Root and Branch Nodes
         VBox radioButtonVBox = new VBox(r1, r2, r3);
         HBox hb = new HBox(20, radioButtonVBox, cb);
         HBox hb2 = new HBox(10, order, clear);
-        VBox vb = new VBox(50, hb, hb2, orderPlaced);
+        VBox vb = new VBox(50, hb, hb2, finalLabel);
         HBox root = new HBox(20, mainLabel, lv, vb);
         
         //Padding and other customization
         root.setPadding(new Insets(20));
         
         
-        Scene scene = new Scene(root, 700, 300);
+        Scene scene = new Scene(root, 900, 300);
         stage.setScene(scene);
+        scene.getStylesheets().add("styles.css");
         stage.show();
     }
     
