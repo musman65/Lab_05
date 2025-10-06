@@ -38,9 +38,11 @@ public class Main extends Application {
         
         //Label(s) and List View
         Label mainLabel = new Label("Select bag style:");
+        Label orderPlaced = new Label("test");
         ListView<String> lv = new ListView<>();
         lv.getItems().addAll("Full Decorative", "Beaded", "Pirate Design", "Fringed", "Leather", "Plain");
         lv.setMaxHeight(185);
+        lv.setMaxWidth(300);
         
         //Buttons
         Button order = new Button("Place Order");
@@ -63,18 +65,23 @@ public class Main extends Application {
         r1.setToggleGroup(tg);
         r2.setToggleGroup(tg);
         r3.setToggleGroup(tg);
+        r1.setSelected(true);
+        
+        //Event Handling
         
         
-        
-        //Background Nodes
+        //Root and Branch Nodes
         VBox radioButtonVBox = new VBox(r1, r2, r3);
-        HBox hb = new HBox(20, mainLabel, lv, radioButtonVBox, cb);
+        HBox hb = new HBox(20, radioButtonVBox, cb);
+        HBox hb2 = new HBox(10, order, clear);
+        VBox vb = new VBox(50, hb, hb2, orderPlaced);
+        HBox root = new HBox(20, mainLabel, lv, vb);
         
         //Padding and other customization
-        hb.setPadding(new Insets(20));
+        root.setPadding(new Insets(20));
         
         
-        Scene scene = new Scene(hb, 700, 300);
+        Scene scene = new Scene(root, 700, 300);
         stage.setScene(scene);
         stage.show();
     }
