@@ -1,5 +1,5 @@
 // https://github.com/musman65/Lab_05/tree/lab_05
-// TASK 01 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
@@ -38,7 +38,7 @@ public class Main extends Application {
         
         //Label(s) and List View
         Label mainLabel = new Label("Select bag style:");
-        Label finalLabel = new Label("test");
+        Label finalLabel = new Label("");
         ListView<String> lv = new ListView<>();
         lv.getItems().addAll("Full Decorative", "Beaded", "Pirate Design", "Fringed", "Leather", "Plain");
         lv.setMaxHeight(185);
@@ -98,6 +98,7 @@ public class Main extends Application {
             }
             
             finalLabel.setText("Your order of " + selectedAmount + " " + selectedSize + " " + selectedStyle + " bags has been successfully placed!");
+            finalLabel.getStyleClass().remove("label-warning");
             finalLabel.getStyleClass().add("label-style1");
         });
         
@@ -105,10 +106,15 @@ public class Main extends Application {
             lv.getSelectionModel().clearSelection();
             cb.getSelectionModel().clearSelection();
             finalLabel.setText("");
-            finalLabel.getStyleClass().add("label-style1");
+            while (finalLabel.getStyleClass().contains("label-style1")) {
+                finalLabel.getStyleClass().remove("label-style1");
+            }
+            while (finalLabel.getStyleClass().contains("label-warning")) {
+                finalLabel.getStyleClass().remove("label-warning");
+            }
         });
         
-        //Root and Branch Nodes
+        //Panes
         VBox radioButtonVBox = new VBox(r1, r2, r3);
         HBox hb = new HBox(20, radioButtonVBox, cb);
         HBox hb2 = new HBox(10, order, clear);
