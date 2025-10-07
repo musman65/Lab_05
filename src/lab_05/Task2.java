@@ -36,7 +36,10 @@ public class Task2 extends Application {
         stage.setTitle("Bill Calculator");
         
         //Info
-        
+        double[] bevPrices = {2.50, 2.00, 1.75, 2.95, 1.50, 2.50};
+        double[] appPrices = {4.50, 3.75, 5.25, 3.00, 6.95};
+        double[] mainPrices = {15.00, 13.50, 13.95, 11.90, 18.99, 11.75, 12.25};
+        double[] desPrices = {5.95, 4.50, 4.75, 3.25, 5.98};
         
         //Labels and Buttons
         Label bev = new Label("Beverage");
@@ -47,9 +50,9 @@ public class Task2 extends Application {
         Label finalTipLabel = new Label("Tip Selected (%): 0");
         Label totalWithoutTip = new Label("Total without tip: $0");
         Label totalWithTip = new Label("Total with tip: $0");
-        Button calc = new Button("Calculae Total");
+        Button calc = new Button("Calculate Total");
         Button clear = new Button("Clear");  
-        Label warning = new Label("test");
+        Label warning = new Label("");
         
         //Slider
         Slider tip = new Slider(0.0, 20.0, 0.0);
@@ -77,55 +80,58 @@ public class Task2 extends Application {
         calc.setOnMousePressed(event -> {
             if (bevCB.getSelectionModel().getSelectedItem() == null) {
                 warning.setText("Please select a beverage!");
+                totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19));
+                totalWithTip.setText(totalWithTip.getText().substring(0, 16));
                 return;
             }
             
             if (appCB.getSelectionModel().getSelectedItem() == null) {
                 warning.setText("Please select an appetizer!");
+                totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19));
+                totalWithTip.setText(totalWithTip.getText().substring(0, 16));
                 return;
             }
             
             if (mainCB.getSelectionModel().getSelectedItem() == null) {
                 warning.setText("Please select a main course!");
+                totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19));
+                totalWithTip.setText(totalWithTip.getText().substring(0, 16));
                 return;
             }
             
             if (desCB.getSelectionModel().getSelectedItem() == null) {
                 warning.setText("Please select a dessert!");
+                totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19));
+                totalWithTip.setText(totalWithTip.getText().substring(0, 16));
                 return;
             }
             
             double total = 0;
             
-            switch (bevCB.getSelectionModel().getSelectedItem()) {
-                case "Coffee" -> {
-                    total += 2.50;
-                }
-                case "Tea" -> {
-                    total += 2.00;
-                }
-                case "Soft Drink" -> {
-                    total += 1.75;
-                }
-                case "Water" -> {
-                    total += 2.95;
-                }
-                case "Milk" -> {
-                    total += 2.50;
-                }
-                case "Juice" -> {
-                    total += 2.50;
-                }
-                
-            }
-            
-            
+            total += bevPrices[bevCB.getSelectionModel().getSelectedIndex()];
+            total += appPrices[appCB.getSelectionModel().getSelectedIndex()];
+            total += mainPrices[mainCB.getSelectionModel().getSelectedIndex()];
+            total += desPrices[desCB.getSelectionModel().getSelectedIndex()];
             warning.setText("");
             
+            totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19) + "$" + Math.round((total) * 100) / 100.0 + " is the total without tip ($" + Math.round((tip.getValue() / 100) * 100.0 * total) / 100.0 + ") and without taxes. ($" + Math.round(total * 15.0) / 100.0 + ")");
+            totalWithTip.setText(totalWithTip.getText().substring(0, 16) + "$" + Math.round((total + (tip.getValue()) * total / 100) * 115.0) / 100.0 + " is the total with tip ($" + Math.round((tip.getValue() * total / 100) * 100.0) / 100.0 + ") and with taxes. ($" + Math.round(total * 15.0) / 100.0 + ")");
         });
         
         clear.setOnMousePressed(event -> {
-            
+            bevCB.getSelectionModel().clearSelection();
+            appCB.getSelectionModel().clearSelection();
+            mainCB.getSelectionModel().clearSelection();
+            desCB.getSelectionModel().clearSelection();
+            totalWithoutTip.setText(totalWithoutTip.getText().substring(0, 19));
+            totalWithTip.setText(totalWithTip.getText().substring(0, 16));
+            warning.setText("");
+            tip.setValue(0.0);
+            finalTipLabel.setText("" + finalTipLabel.getText().substring(0, 18) + " 0");
+        });
+        
+        tip.setOnMouseReleased(event -> {
+            finalTipLabel.setText("" + finalTipLabel.getText().substring(0, 18) + Math.round(tip.getValue() * 100.0) / 100.0);
         });
         
         //Panes
@@ -144,18 +150,20 @@ public class Task2 extends Application {
         gp.add(des,         0, 3);
         gp.add(desCB,       1, 3);
         
+        HBox buttons = new HBox(10, calc, clear);
         VBox tipVB = new VBox(20, tipLabel, tip);
         VBox finalInfo = new VBox(20, finalTipLabel, totalWithoutTip, totalWithTip);
-        VBox vb2 = new VBox(40, gp, warning, tipVB, finalInfo);
+        VBox vb2 = new VBox(40, gp, warning, buttons, tipVB, finalInfo);
         
         root.setCenter(vb2);
         
         //Padding and other customization
         root.setPadding(new Insets(20));
         gp.setHgap(50);
+        gp.setVgap(5);
         warning.getStyleClass().add("label-warning");
         
-        Scene scene = new Scene(root, 500, 300);
+        Scene scene = new Scene(root, 500, 600);
         scene.getStylesheets().add("styles.css");
         stage.setScene(scene);
         stage.show();
